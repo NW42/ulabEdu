@@ -88,6 +88,9 @@ public class ComplexExamples {
      */
 
     private static int[] findPair(int[] input, int sum) {
+        if (input == null) {
+            return null;
+        }
         for (int i = 0; i < input.length; i++) {
             int tail = sum - input[i];
             int[] lessInput = Arrays.copyOfRange(input, i + 1, input.length);
@@ -100,6 +103,9 @@ public class ComplexExamples {
     }
 
     private static boolean fuzzySearch(String stringOne, String stringTwo) {
+        if ((stringOne == null) || (stringTwo == null)) {
+            return false;
+        }
         int fromIndex = 0;
         for (int i = 0; i < stringOne.length(); i++) {
             int index = stringTwo.indexOf(stringOne.charAt(i), fromIndex);
@@ -116,7 +122,9 @@ public class ComplexExamples {
         System.out.println();
 
         for (Person person : RAW_DATA) {
-            System.out.println(person.id + " - " + person.name);
+            if (person != null) {
+                System.out.println(person.id + " - " + person.name);
+            }
         }
 
         System.out.println();
@@ -142,6 +150,7 @@ public class ComplexExamples {
 
         Map<String, Long> persons = Arrays
                 .stream(RAW_DATA)
+                .filter(Objects::nonNull)
                 .distinct()
                 .sorted(Comparator.comparingInt(p -> p.id))
                 .collect(Collectors.groupingBy(Person::getName, Collectors.counting()));
