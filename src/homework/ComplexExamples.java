@@ -1,8 +1,10 @@
 package homework;
 
-import java.util.*;
-
-import static java.util.stream.Collectors.groupingBy;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ComplexExamples {
 
@@ -85,6 +87,30 @@ public class ComplexExamples {
         1 - Jack (4)
      */
 
+    private static int[] findPair(int[] input, int sum) {
+        for (int i = 0; i < input.length; i++) {
+            int tail = sum - input[i];
+            int[] lessInput = Arrays.copyOfRange(input, i + 1, input.length);
+            int index = Arrays.binarySearch(lessInput, tail);
+            if (index >= 0) {
+                return new int[]{input[i], tail};
+            }
+        }
+        return null;
+    }
+
+    private static boolean fuzzySearch(String stringOne, String stringTwo) {
+        int fromIndex = 0;
+        for (int i = 0; i < stringOne.length(); i++) {
+            int index = stringTwo.indexOf(stringOne.charAt(i), fromIndex);
+            if (index < 0) {
+                return false;
+            }
+            fromIndex = index + 1;
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
         System.out.println("Raw data:");
         System.out.println();
@@ -114,7 +140,14 @@ public class ComplexExamples {
                 Value:1
          */
 
-
+        Map<String, Long> persons = Arrays
+                .stream(RAW_DATA)
+                .distinct()
+                .sorted(Comparator.comparingInt(p -> p.id))
+                .collect(Collectors.groupingBy(Person::getName, Collectors.counting()));
+        for(Map.Entry<String, Long> entry : persons.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + '\n' + "Value: " + entry.getValue());
+        }
 
         /*
         Task2
@@ -122,7 +155,7 @@ public class ComplexExamples {
             [3, 4, 2, 7], 10 -> [3, 7] - вывести пару менно в скобках, которые дают сумму - 10
          */
 
-
+        System.out.println(Arrays.toString(findPair(new int[]{3, 4, 2, 7}, 10)));
 
         /*
         Task3
@@ -134,5 +167,12 @@ public class ComplexExamples {
                     fuzzySearch("cwheeel", "cartwheel"); // false
                     fuzzySearch("lw", "cartwheel"); // false
          */
+
+        System.out.println(fuzzySearch("car", "ca6$$#_rtwheel"));
+        System.out.println(fuzzySearch("cwhl", "cartwheel"));
+        System.out.println(fuzzySearch("cwhee", "cartwheel"));
+        System.out.println(fuzzySearch("cartwheel", "cartwheel"));
+        System.out.println(fuzzySearch("cwheeel", "cartwheel"));
+        System.out.println(fuzzySearch("lw", "cartwheel"));
     }
 }
